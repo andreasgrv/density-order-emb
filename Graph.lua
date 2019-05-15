@@ -33,7 +33,21 @@ function graph.transitiveClosure(edges)
         dfs(s, s)
     end
 
-    return torch.LongTensor(edges)
+    -- remove duplicates from edges table
+    local unique_edges = {}
+    local hash = {}
+
+    for i=1, #edges do
+        hypo = edges[i][1]
+        hyper = edges[i][2]
+        label = hypo .. " " .. hyper
+        if not hash[label] then
+            unique_edges[#unique_edges+1] = edges[i]
+            hash[label] = true
+        end
+    end
+
+    return torch.LongTensor(unique_edges)
 end
 
 return graph
